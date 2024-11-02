@@ -5,6 +5,7 @@
 #include "../include/colors.h"
 #include "../include/misc.h"
 
+// Constructor
 TicTacToe::TicTacToe() {
     clearBoard(); // Initialize the board to an empty state
 }
