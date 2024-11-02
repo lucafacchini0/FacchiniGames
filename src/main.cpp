@@ -43,9 +43,10 @@ int main() {
 
         // Start the selected game
         if (choice == 1) {
-            startHangmanGame();
+            startHangmanGame(); // Start the Hangman games
         } else if (choice == 2) {
-            startTicTacToeGame();
+            TicTacToe ticTacToeInstance; // Create an instance of the TicTacToe class
+            ticTacToeInstance.startGameLoop(); // Start the TicTacToe game
         } else if (choice == 0) {
             std::cout << GREEN << "Goodbye!" << RESET << std::endl;
             break; // Exit the loop if user chooses to quit

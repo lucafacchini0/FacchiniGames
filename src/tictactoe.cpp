@@ -1,15 +1,15 @@
+#include "../include/tictactoe.h"
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include "../include/colors.h"
 #include "../include/misc.h"
-#include "../include/tictactoe.h"
 
-char board[3][3] = {
-    {'0', '0', '0'},
-    {'0', '0', '0'},
-    {'0', '0', '0'}
-};
+TicTacToe::TicTacToe() {
+    clearBoard(); // Initialize the board to an empty state
+}
 
-static void showChooseDifficultyMenu() {
+void TicTacToe::showChooseDifficultyMenu() const {
     std::cout << std::endl;
     std::cout << BOLDMAGENTA << centerText("TicTacToe Game") << RESET << std::endl;
     std::cout << MAGENTA << centerText("Choose the difficulty:") << RESET << std::endl;
@@ -22,7 +22,7 @@ static void showChooseDifficultyMenu() {
     std::cout << std::endl;
 }
 
-static void printBoard() {
+void TicTacToe::printBoard() const {
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
             char current = board[i][j];
@@ -38,7 +38,7 @@ static void printBoard() {
     }
 }
 
-static void clearBoard() {
+void TicTacToe::clearBoard() {
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
             board[i][j] = '0';
@@ -46,7 +46,7 @@ static void clearBoard() {
     }
 }
 
-static bool validChoice(int row, int col) {
+bool TicTacToe::validChoice(int row, int col) const {
     if(row < 0 || row > 2 || col < 0 || col > 2) {
         std::cout << RED << "Invalid choice. Try again." << RESET << std::endl;
         return false;
@@ -60,7 +60,7 @@ static bool validChoice(int row, int col) {
     return true;
 }
 
-static char hasWon() {
+char TicTacToe::hasWon() const {
     // Check rows
     for(int i = 0; i < 3; i++) {
         if(board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != '0') {
@@ -88,7 +88,7 @@ static char hasWon() {
     return '0'; // No winner yet
 }
 
-static void startGame(int difficulty) {
+void TicTacToe::startGame(int difficulty) {
     char currentPlayer = 'X'; // Starting player
     bool hasGameEnded = false;
 
@@ -145,7 +145,7 @@ static void startGame(int difficulty) {
     }
 }
 
-void startTicTacToeGame() {
+void TicTacToe::startGameLoop() {
     srand(static_cast<unsigned int>(time(nullptr)));
 
     bool playAgain = true;
