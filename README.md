@@ -35,17 +35,10 @@ Build the project
 build
 ```
 
+## 🕹️ How to Play
 Now, an executable inside the build folder will be created. Run it!
 ```bash
 ./FacchiniGames
-```
-
-## 🕹️ How to Play
-Compile and run any game with the following commands:
-
-```bash
-g++ games.cpp -o games
-./games
 ```
 
 ## 🤝 Contributing
