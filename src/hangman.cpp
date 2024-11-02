@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <cctype>
 #include "../include/misc.h"
 #include "../include/hangman.h"
 #include "../include/colors.h"
@@ -15,9 +16,18 @@ const string EASY_FILE_PATH = "../assets/hangman/easyWords.txt";
 const string MEDIUM_FILE_PATH = "../assets/hangman/mediumWords.txt";
 const string HARD_FILE_PATH = "../assets/hangman/hardWords.txt";
 
-constexpr int MAX_TRIES = 10;
+const int MAX_TRIES = 10;
 
-static void showChooseDifficultyMenu() {
+// Constructor
+Hangman::Hangman() {
+    srand(static_cast<unsigned int>(time(nullptr)));
+}
+
+void Hangman::printCurrentWord(const string& word) const {
+    std::cout << word << std::endl;
+}
+
+void Hangman::showChooseDifficultyMenu() const {
     std::cout << std::endl;
     std::cout << BOLDMAGENTA << centerText("Hangman Game") << RESET << std::endl;
     std::cout << MAGENTA << centerText("Choose the difficulty:") << RESET << std::endl;
@@ -30,35 +40,64 @@ static void showChooseDifficultyMenu() {
     std::cout << std::endl;
 }
 
-static bool isValidGuess(const string& guess, const string& currentWord) {
-    for (char c : guess) {
-        if (!(isalpha(c))) {
-            clearScreen();
+bool isValidGuess(const string& guess, const string& currentWord, const string& selectedWord, int& triesLeft) {
+    // Check if guess is a single letter and alphabetic
+    if (guess.length() == 1) {
+        if (!std::isalpha(guess[0])) {
             std::cout << std::endl;
-            std::cout << RED << "Invalid guess (Only letters are allowed). Try again." << RESET << std::endl;
-            return false;
+            std::cout << BOLDRED << "Invalid guess." << RESET << std::endl;
+            std::cout << RED << "You didn't enter a valid character." << RESET << std::endl;
+            std::cout << std::endl;
+
+            --triesLeft; // Decrement tries left for invalid character
+            return false; // Invalid single letter
+        }
+
+        // Check if the letter has already been guessed
+        char lowerGuess = std::tolower(guess[0]);
+        if (currentWord.find(lowerGuess) != std::string::npos) {
+            std::cout << std::endl;
+            std::cout << BOLDYELLOW << "Invalid guess." << RESET << std::endl;
+            std::cout << YELLOW << "You've already guess that letter!" << RESET << std::endl;
+            std::cout << std::endl;
+
+            return false; // Already guessed letter
+        }
+    } else if (guess.length() > 1) { // Handle word guesses
+        // Check for invalid characters in the guess
+        for (char c : guess) {
+            if (!std::isalpha(c)) {
+                std::cout << std::endl;
+                std::cout << BOLDRED << "Invalid guess." << RESET << std::endl;
+                std::cout << RED << "Your guess contains invalid characters." << RESET << std::endl;
+                std::cout << std::endl;
+
+                --triesLeft; // Decrement tries left for invalid character in word guess
+                return false; // Invalid character in the guess
+            }
+        }
+        if (guess == selectedWord) {
+            return true; // Valid guess, player has guessed the word
+        } else {
+            std::cout << std::endl;
+            std::cout << BOLDRED << "Invalid guess." << RESET << std::endl;
+            std::cout << RED << "The word is incorrect." << RESET << std::endl;
+            std::cout << std::endl;
+
+            --triesLeft; // Decrement tries left for incorrect word guess
+            return false; // Not a valid guess
         }
     }
-
-    if (guess.length() > currentWord.length()) {
-        clearScreen();
-        std::cout << std::endl;
-        std::cout << RED << "Invalid guess (Word is too long). Try again." << RESET << std::endl;
-        return false;
-    }
-
-    return true;
+    return true; // Valid guess for a single letter
 }
 
-static void startGame(const string& filePath, const string& difficultyText, const string& color) {
-    // File stream
+void Hangman::startGame(const std::string &filePath, const std::string &difficultyText, const std::string &color) {
     std::ifstream wordsFile(filePath);
     if (!wordsFile.is_open()) {
-        std::cerr << "Error opening the file." << std::endl;
+        std::cerr << "Error opening file." << std::endl;
         return;
     }
 
-    // Read the words from the file
     vector<string> words;
     string line;
     while (std::getline(wordsFile, line)) {
@@ -71,67 +110,74 @@ static void startGame(const string& filePath, const string& difficultyText, cons
         return;
     }
 
-    // Get a random word
     int randomWordIndex = rand() % words.size();
-    Hangman game(words[randomWordIndex]);
+    string selectedWord = words[randomWordIndex];
 
-    bool hasWon = false;
+    string currentWord(selectedWord.length(), '_');
+    int triesLeft = MAX_TRIES;
 
     clearScreen();
     std::cout << std::endl;
     std::cout << color << difficultyText << " Game has started!" << RESET << std::endl;
-    std::cout << "The word is " << BLUE << words[randomWordIndex].length() << RESET << " letters long" << std::endl;
+    std::cout << "The word is " << BLUE << selectedWord.length() << RESET << " letters long" << std::endl;
     std::cout << std::endl;
 
-    for (int i = 0; i < MAX_TRIES && !hasWon;) {
-        string guess;
-        std::cout << YELLOW << "Remaining tries: " << RESET << MAX_TRIES - i << std::endl;
-        std::cout << std::endl;
-        game.displayCurrentWord();
-        std::cout << std::endl;
-        std::cout << BLUE << "Your guess: " << RESET;
-        std::cin >> guess;
+    string currentGuess;
 
-        // Check if it's a valid guess
-        if (!isValidGuess(guess, words[randomWordIndex])) {
-            i++;
-            continue;
-        }
+    while (triesLeft > 0 && currentWord != selectedWord) {
+        std::cout << YELLOW << "Remaining tries: " << RESET << triesLeft << std::endl;
+        printCurrentWord(currentWord);
 
-        // Check the guess
-        int result = game.guessLetter(guess);
+        std::cout << "Enter your guess: ";
+        std::cin >> currentGuess;
+        clearScreen();
 
-        if (result == -1) {
-            clearScreen();
-            std::cout << std::endl;
-            std::cout << RED << "Incorrect guess." << RESET << std::endl;
-            i++;
-        } else if (result == -2) {
-            clearScreen();
-            std::cout << std::endl;
-            hasWon = true;
-        } else {
-            clearScreen();
-            std::cout << std::endl;
-            std::cout << GREEN << "Correct guess." << RESET << std::endl;
+        // Validate the guess
+        bool validGuess = isValidGuess(currentGuess, currentWord, selectedWord, triesLeft);
+
+        if (validGuess) {
+            if (currentGuess.length() == 1) { // Process single letter guesses
+                char lowerGuess = std::tolower(currentGuess[0]); // Convert to lowercase
+
+                bool found = false; // Reset found for each guess
+                for (size_t i = 0; i < selectedWord.length(); i++) {
+                    if (std::tolower(selectedWord[i]) == lowerGuess) { // Compare in lowercase
+                        currentWord[i] = selectedWord[i];
+                        found = true;
+                    }
+                }
+
+                if (!found) {
+                    std::cout << std::endl;
+                    std::cout << BOLDRED << "Incorrect guess." << RESET << std::endl;
+                    std::cout << RED << "The letter '" << lowerGuess << "' is not in the word." << RESET << std::endl;
+                    std::cout << std::endl;
+                    --triesLeft;
+                } else {
+                    std::cout << std::endl;
+                    std::cout << BOLDGREEN << "Correct guess!" << RESET << std::endl;
+                    std::cout << GREEN << "The letter '" << lowerGuess << "' is in the word." << RESET << std::endl;
+                    std::cout << std::endl;
+                }
+            } else {
+                // If guess is valid and is the whole word
+                currentWord = selectedWord; // Player guessed the word correctly
+            }
         }
     }
-    clearScreen();
-    if(hasWon) {
-        std::cout << GREEN << centerText("Congratulations! You won!") << RESET << std::endl;
+
+    // Game result display
+    if (currentWord == selectedWord) {
+        std::cout << GREEN << "Congratulations! You've guessed the word: " << selectedWord << RESET << std::endl;
     } else {
-        std::cout << RED << centerText("Aaaah, you lost! Better luck next time!") << RESET << std::endl;
+        std::cout << RED << "Sorry, you've run out of tries. The word was: " << selectedWord << RESET << std::endl;
     }
-    std::cout << centerText("The word was: ") << std::endl;
-    std::cout << BLUE << centerText(words[randomWordIndex]) << RESET << std::endl;
 }
 
-void startHangmanGame() {
-    srand(static_cast<unsigned int>(time(nullptr)));
-
+void Hangman::startGameLoop() {
     bool playAgain = true;
 
-    while(playAgain) {
+    while (playAgain) {
         int difficulty = -1;
         clearScreen();
         showChooseDifficultyMenu();
@@ -163,6 +209,5 @@ void startHangmanGame() {
         char playAgainChoice;
         std::cin >> playAgainChoice;
         playAgain = (playAgainChoice == 'y' || playAgainChoice == 'Y');
-
     }
 }

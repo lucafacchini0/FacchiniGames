@@ -7,6 +7,7 @@
 
 // Constructor
 TicTacToe::TicTacToe() {
+    srand(static_cast<unsigned int>(time(nullptr)));
     clearBoard(); // Initialize the board to an empty state
 }
 
@@ -147,8 +148,6 @@ void TicTacToe::startGame(int difficulty) {
 }
 
 void TicTacToe::startGameLoop() {
-    srand(static_cast<unsigned int>(time(nullptr)));
-
     bool playAgain = true;
 
     while(playAgain) {
