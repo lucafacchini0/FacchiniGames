@@ -9,7 +9,7 @@ const int TOTAL_GAMES = 2;
 void displayMenu() {
     std::cout << std::endl;
     std::cout << BOLDYELLOW << centerText("FacchiniGames") << RESET << std::endl;
-    std::cout << BLUE << centerText("v1.0") << RESET << std::endl;
+    std::cout << BLUE << centerText("v1.1.0-beta") << RESET << std::endl;
 
     std::cout << std::endl;
     std::cout << GREEN << "Choose an option" << RESET << std::endl;
