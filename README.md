@@ -7,25 +7,38 @@ This project is a collection of C++ CLI games aimed to bring some fun and joy, b
 
 ## 🎮 Games Included so far
 1. **Hangman 🎩**
+2. **TicTacToe ⭕**
 
 ## 🚀 Getting Started
 To play these games, you'll need:
-- A **C++ compiler** (e.g., `g++`)
-- Terminal or command prompt
+- A **C++ compiler** (e.g., `g++` or `Clang`)
+- [CMake](https://cmake.org/download/)
+- Of course, Git installed
+- CLion or another IDE: Recommended but not required. You can also use a text editor or a terminal.
 
 Clone the repository and get ready to play!
 
 ```bash
 git clone https://github.com/lucafacchini0/FacchiniGames.git
-cd FacchiniGames/src
+cd FacchiniGames/
+mkdir build
+cd build
+```
+
+Now, run CMake
+```bash
+cmake ..
+```
+
+Build the project
+```bash
+build
 ```
 
 ## 🕹️ How to Play
-Compile and run any game with the following commands:
-
+Now, an executable inside the build folder will be created. Run it!
 ```bash
-g++ games.cpp -o games
-./games
+./FacchiniGames
 ```
 
 ## 🤝 Contributing
