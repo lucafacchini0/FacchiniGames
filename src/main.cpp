@@ -43,7 +43,8 @@ int main() {
 
         // Start the selected game
         if (choice == 1) {
-            startHangmanGame(); // Start the Hangman games
+            Hangman hangmanInstance; // Create an instance of the Hangman class
+            hangmanInstance.startGameLoop(); // Start the Hangman game
         } else if (choice == 2) {
             TicTacToe ticTacToeInstance; // Create an instance of the TicTacToe class
             ticTacToeInstance.startGameLoop(); // Start the TicTacToe game
