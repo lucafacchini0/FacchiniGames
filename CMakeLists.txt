@@ -8,4 +8,6 @@ add_executable(FacchiniGames src/main.cpp
         src/hangman.cpp
         include/colors.h
         include/misc.h
-        src/misc.cpp)
+        src/misc.cpp
+        include/tictactoe.h
+        src/tictactoe.cpp)

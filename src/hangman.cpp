@@ -17,8 +17,9 @@ const string HARD_FILE_PATH = "../assets/hangman/hardWords.txt";
 
 constexpr int MAX_TRIES = 10;
 
-void showChooseDifficultyMenu() {
+static void showChooseDifficultyMenu() {
     std::cout << std::endl;
+    std::cout << BOLDMAGENTA << centerText("Hangman Game") << RESET << std::endl;
     std::cout << MAGENTA << centerText("Choose the difficulty:") << RESET << std::endl;
     std::cout << std::endl;
     std::cout << GREEN << "EASY [1]" << RESET << std::endl;
@@ -29,7 +30,7 @@ void showChooseDifficultyMenu() {
     std::cout << std::endl;
 }
 
-bool isValidGuess(const string& guess, const string& currentWord) {
+static bool isValidGuess(const string& guess, const string& currentWord) {
     for (char c : guess) {
         if (!(isalpha(c))) {
             clearScreen();
@@ -49,7 +50,7 @@ bool isValidGuess(const string& guess, const string& currentWord) {
     return true;
 }
 
-void startGame(const string& filePath, const string& difficultyText, const string& color) {
+static void startGame(const string& filePath, const string& difficultyText, const string& color) {
     // File stream
     std::ifstream wordsFile(filePath);
     if (!wordsFile.is_open()) {
@@ -125,34 +126,43 @@ void startGame(const string& filePath, const string& difficultyText, const strin
     std::cout << BLUE << centerText(words[randomWordIndex]) << RESET << std::endl;
 }
 
-int startHangmanGame() {
+void startHangmanGame() {
     srand(static_cast<unsigned int>(time(nullptr)));
 
-    int difficulty = -1;
-    clearScreen();
-    showChooseDifficultyMenu();
-    std::cout << GREEN << "Enter your choice: " << RESET;
-    std::cin >> difficulty;
+    bool playAgain = true;
 
-    while (difficulty < 0 || difficulty > 3) {
+    while(playAgain) {
+        int difficulty = -1;
         clearScreen();
         showChooseDifficultyMenu();
-        std::cout << RED << "Invalid. Try again." << RESET << std::endl;
         std::cout << GREEN << "Enter your choice: " << RESET;
         std::cin >> difficulty;
-    }
 
-    if (difficulty == 0) {
-        return -1;
-    }
+        while (difficulty < 0 || difficulty > 3) {
+            clearScreen();
+            showChooseDifficultyMenu();
+            std::cout << RED << "Invalid. Try again." << RESET << std::endl;
+            std::cout << GREEN << "Enter your choice: " << RESET;
+            std::cin >> difficulty;
+        }
 
-    if (difficulty == 1) {
-        startGame(EASY_FILE_PATH, "EASY", BOLDGREEN);
-    } else if (difficulty == 2) {
-        startGame(MEDIUM_FILE_PATH, "MEDIUM", BOLDYELLOW);
-    } else if (difficulty == 3) {
-        startGame(HARD_FILE_PATH, "HARD", BOLDRED);
-    }
+        if (difficulty == 0) {
+            return;
+        }
 
-    return 0;
+        if (difficulty == 1) {
+            startGame(EASY_FILE_PATH, "EASY", BOLDGREEN);
+        } else if (difficulty == 2) {
+            startGame(MEDIUM_FILE_PATH, "MEDIUM", BOLDYELLOW);
+        } else if (difficulty == 3) {
+            startGame(HARD_FILE_PATH, "HARD", BOLDRED);
+        }
+
+        std::cout << std::endl;
+        std::cout << YELLOW << "Do you want to play again? (Y/N): " << RESET;
+        char playAgainChoice;
+        std::cin >> playAgainChoice;
+        playAgain = (playAgainChoice == 'y' || playAgainChoice == 'Y');
+
+    }
 }

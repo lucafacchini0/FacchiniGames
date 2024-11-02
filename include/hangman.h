@@ -7,7 +7,7 @@
 
 using std::string;
 
-int startHangmanGame();
+void startHangmanGame();
 
 class Hangman {
 public:
