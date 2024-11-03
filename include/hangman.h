@@ -1,31 +1,34 @@
 #ifndef HANGMAN_H
 #define HANGMAN_H
 
-#include <algorithm>
-#include <iostream>
 #include <string>
+#include "colors.h"
 
 using std::string;
 
-void startHangmanGame();
-
 class Hangman {
 public:
-    Hangman(const string& word) : word(word), wordCopy(word) {
-        emptyWordCopy();
-        maxLetters = word.length();
-    }
-
-    void emptyWordCopy();
-    int guessLetter(string& guess);
-    bool hasWon();
-    void displayCurrentWord() const;
-    void displayFullWord() const;
-
+    Hangman();
+    void startGameLoop();
 private:
-    int maxLetters;
-    string wordCopy;
-    const string word;
+    enum GuessResult {
+        VALID_SINGLE_CHAR,
+        INVALID_SINGLE_CHAR,
+        INVALID_CHAR_WORD,
+        ALREADY_GUESSED_CHAR,
+        INCORRECT_WORD,
+        CORRECT_WORD,
+
+    };
+
+    static void printError(const string& message);
+    static void printWarning(const string& message);
+    static void printSuccess(const string& message);
+    static bool searchSingleChar(char guess, const string& selectedWord, string& currentWord); void showChooseDifficultyMenu() const;
+    void printCurrentWord(const string& word) const;
+    void startGame(const string& filePath, const string& difficultyText, const string& color);
+    GuessResult validateGuess(const string& guess, string& currentWord, const string& selectedWord); // Update return type
+
 };
 
 #endif // HANGMAN_H

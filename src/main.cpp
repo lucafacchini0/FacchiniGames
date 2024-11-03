@@ -9,7 +9,7 @@ const int TOTAL_GAMES = 2;
 void displayMenu() {
     std::cout << std::endl;
     std::cout << BOLDYELLOW << centerText("FacchiniGames") << RESET << std::endl;
-    std::cout << BLUE << centerText("v1.0") << RESET << std::endl;
+    std::cout << BLUE << centerText("v1.1.0-beta") << RESET << std::endl;
 
     std::cout << std::endl;
     std::cout << GREEN << "Choose an option" << RESET << std::endl;
@@ -43,7 +43,8 @@ int main() {
 
         // Start the selected game
         if (choice == 1) {
-            startHangmanGame(); // Start the Hangman games
+            Hangman hangmanInstance; // Create an instance of the Hangman class
+            hangmanInstance.startGameLoop(); // Start the Hangman game
         } else if (choice == 2) {
             TicTacToe ticTacToeInstance; // Create an instance of the TicTacToe class
             ticTacToeInstance.startGameLoop(); // Start the TicTacToe game
