@@ -25,7 +25,7 @@ int main() {
     bool playAgain = true;
 
     while (playAgain) {
-        clearScreen(); // Clear the screen for a fresh start
+        clearScreen(); // Clear the screen for a fresh start.
         displayMenu();
         std::cout << GREEN << "Enter your choice: " << RESET;
         std::cin >> choice;

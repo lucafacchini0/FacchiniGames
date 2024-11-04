@@ -18,12 +18,17 @@ const string HARD_FILE_PATH = "../assets/hangman/hardWords.txt";
 
 const int MAX_TRIES = 10;
 
-// Constructor
+
+
+
+// Constructor to initialize the game
 Hangman::Hangman() {
     srand(static_cast<unsigned int>(time(nullptr))); // Seed random number generator
 }
 
-// Display the difficulty selection menu to the player
+
+
+// Method to display the choose difficulty menu
 void Hangman::showChooseDifficultyMenu() const {
     std::cout << std::endl;
     std::cout << BOLDMAGENTA << centerText("Hangman Game") << RESET << std::endl;
@@ -37,6 +42,7 @@ void Hangman::showChooseDifficultyMenu() const {
     std::cout << std::endl;
 }
 
+// Print the error message to the console
 void Hangman::printError(const string& message) {
     std::cout << std::endl;
     std::cout << BOLDRED << "Invalid guess " << RESET << std::endl;
@@ -44,6 +50,7 @@ void Hangman::printError(const string& message) {
     std::cout << std::endl;
 }
 
+// Print the warning message to the console
 void Hangman::printWarning(const string& message) {
     std::cout << std::endl;
     std::cout << BOLDYELLOW << "Invalid " << RESET << std::endl;
@@ -51,6 +58,7 @@ void Hangman::printWarning(const string& message) {
     std::cout << std::endl;
 }
 
+// Print the success message to the console
 void Hangman::printSuccess(const string& message) {
     std::cout << std::endl;
     std::cout << BOLDGREEN << "Valid guess " << RESET << std::endl;
@@ -63,6 +71,10 @@ void Hangman::printCurrentWord(const string& word) const {
     std::cout << word << std::endl;
 }
 
+
+
+
+// Method to validate the user's guess
 Hangman::GuessResult Hangman::validateGuess(const std::string& guess, std::string& currentWord, const std::string& selectedWord) {
 
     // Check if the guess is a single letter
@@ -89,6 +101,7 @@ Hangman::GuessResult Hangman::validateGuess(const std::string& guess, std::strin
     return INCORRECT_WORD;
 }
 
+// Search for a single character in the selected word
 bool Hangman::searchSingleChar(char guess, const string& selectedWord, string& currentWord) {
     bool found = false;
 
@@ -101,6 +114,9 @@ bool Hangman::searchSingleChar(char guess, const string& selectedWord, string& c
     return found;
 }
 
+
+
+
 // Start the Hangman game with the selected difficulty
 void Hangman::startGame(const string &filePath, const string &difficultyText, const string &color) {
     // Open the selected file
@@ -110,8 +126,8 @@ void Hangman::startGame(const string &filePath, const string &difficultyText, co
         return;
     }
 
-    vector<string> words;
-    string line;
+    vector<string> words; // Vector to store words from the file
+    string line; // Line to read from the file
 
     // Read words from the selected file into a vector
     while (std::getline(wordsFile, line)) {
@@ -121,6 +137,7 @@ void Hangman::startGame(const string &filePath, const string &difficultyText, co
     // Close the file after reading
     wordsFile.close();
 
+    // Check if the file is empty
     if (words.empty()) {
         std::cerr << "No words found in the file." << std::endl;
         return; // Exit if no words are found
@@ -195,6 +212,7 @@ void Hangman::startGame(const string &filePath, const string &difficultyText, co
 void Hangman::startGameLoop() {
     bool playAgain = true;
 
+    // While the player wants to play again
     while (playAgain) {
         int difficulty = -1;
         clearScreen();
@@ -211,16 +229,12 @@ void Hangman::startGameLoop() {
             std::cin >> difficulty;
         }
 
-        // Exit if the user selects 0
-        if (difficulty == 0) {
-            return; // Exit the game loop
-        }
-
         // Start the game based on selected difficulty
         switch (difficulty) {
             case 1: startGame(EASY_FILE_PATH, "EASY", BOLDGREEN); break;
             case 2: startGame(MEDIUM_FILE_PATH, "MEDIUM", BOLDYELLOW); break;
             case 3: startGame(HARD_FILE_PATH, "HARD", BOLDRED); break;
+            default: break;
         }
 
         // Ask if the user wants to play again

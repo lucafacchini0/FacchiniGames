@@ -5,6 +5,8 @@ cmake-build-*/
 .idea/
 *.iml
 
+assets.rc
+
 # IDEs
 .vscode/
 
